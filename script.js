@@ -38,6 +38,9 @@ const updateCurrentNumber = (digit) => {
   if (currentNumber === '0') {
     currentNumber = '';
   }
+  if (digit === '.' && currentNumber.includes('.')) {
+    return;
+  }
   currentNumber += digit;
   updateDisplay(currentNumber);
 };
@@ -62,19 +65,19 @@ let operation;
 
 const calculateResult = () => {
   const rightSideNumber = Number(currentNumber);
-  const result = operation(leftSideNumber, rightSideNumber);
-  updateDisplay(`${result}`);
+  return operation(leftSideNumber, rightSideNumber);
 }
 
 const handleOperation = (event) => {
   console.log(event.target);
   const symbol = event.target.dataset.operation;
   if(symbol === '=') {
-    calculateResult();
+    let result = calculateResult();
+    currentNumber = `${result}`;
+    updateDisplay(currentNumber);
     leftSideNumber = null;
     rightSideNumber = null;
     operation = null;
-    currentNumber = '0';
     return;
   }
   operation = selectOperation(symbol);
@@ -87,6 +90,20 @@ document.querySelectorAll(".operation").forEach((element) => {
 });
 
 /* All-Clear */
-document.querySelector("#all-clear").addEventListener('click',(event) => {
+document.querySelector("#all-clear").addEventListener('click', (event) => {
   resetCurrentNumber();
+});
+
+/* Invert */
+document.querySelector("#invert").addEventListener('click', (event) => {
+  const number = Number(currentNumber) * -1;
+  currentNumber = `${number}`;
+  updateDisplay(currentNumber);
+});
+
+/* Percent */
+document.querySelector("#percent").addEventListener('click', (event) => {
+  const number = Number(currentNumber) / 100;
+  currentNumber = `${number}`;
+  updateDisplay(currentNumber);
 });
